@@ -17,7 +17,8 @@ namespace EntityFrameworkS3
 
         static void Main()
         {
-         
+            UpdateSupplierFaxNumber();
+            UpdateReorderAmount();
         }
 
         #region¨Select
@@ -277,6 +278,48 @@ namespace EntityFrameworkS3
         /// </summary>
         public static void UpdateSupplierFaxNumber()
         {
+            // Get all suppliers
+            IQueryable<Supplier> suppliers = context.Suppliers.Where(o => o.Fax == null);
+            // Get all customers
+            IQueryable<Customer> customers = context.Customers.Where(o => o.Fax == null);
+
+            // Update all Suppliers
+            foreach(Supplier supplier in suppliers)
+            {
+                supplier.Fax = "No fax number";
+            }
+            // Update all Customers
+            foreach(Customer customer in customers)
+            {
+                customer.Fax = "No fax number";
+            }
+            // Save the changes
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 2.Opdater genbestillingsmængden for alle ikke-ugåede produkter, 
+        /// hvis nuværende genbestillings-mængde er 0 og nuværende beholdning
+        /// er mindre en 20, til 10. 
+        /// </summary>
+        public static void UpdateReorderAmount()
+        {
+            IQueryable<Product> products = context.Products.Where(o => o.ReorderLevel == 0 && o.ReorderLevel < 20);
+
+            foreach(Product product in products)
+            {
+                product.ReorderLevel = 10;
+            }
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 3. Opdater alle spanske kunder med den korrekte region. 
+        /// Se spanske regioner på wikipedia og/eller google maps. 
+        /// </summary>
+        public static void UpdateSpanishCustomers()
+        {
+            IQueryable<Customer> customers = context.Customers.Where(o => o.Country == "Spain");
 
         }
         #endregion
