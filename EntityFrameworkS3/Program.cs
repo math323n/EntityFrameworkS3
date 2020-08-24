@@ -17,34 +17,15 @@ namespace EntityFrameworkS3
 
         static void Main()
         {
-            /*
-            NorthwindContext context = new NorthwindContext();
-            IQueryable<Order> allOrders = context.Orders.Include("Customer")
-                .Where(o => o.Customer.CompanyName.StartsWith("A"));
-            foreach(Order item in allOrders)
-            {
-                Console.WriteLine($"{item.Customer.CompanyName} {item.OrderDate.Value.ToShortDateString()}: {item.Freight} $");
-            }*/
-
-            // EfCore - Object Relational Mapping
-            // 1 Find all Discontinued Products
-
-
-            // 2 Find Supplier in Québec
-
-
-            // 3 Find all Suppliers in France & Germany
-
-
-            // 4 Find all suppliers without a website
-
-
-
-            AverageProductPrice();
+         
         }
 
-        // 1 Find all Discontinued Products
-        private static void FindDiscontinuedProducts()
+        #region¨Select
+
+        /// <summary>
+        /// 1. Find alle produkter der ikke længere føres. 
+        /// </summary>
+        public static void FindDiscontinuedProducts()
         {
             List<Product> allProducts = context.Products
                    .Where(o => o.Discontinued)
@@ -56,7 +37,9 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 2 Find all Suppliers from Quebec
+        /// <summary>
+        /// 2. Find alle leverandører fra Québec. 
+        /// </summary>
         private void FindAllQuebecSuppliers()
         {
             DbSet<Supplier> allSuppliers = context.Suppliers;
@@ -67,8 +50,10 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 3 Find all Suppliers in Germany & France
-        private void FindAllSuppliersGermanyFrance()
+        /// <summary>
+        /// 3. Find alle leverandører fra Tyskland og Frankrig. 
+        /// </summary>
+        public void FindAllSuppliersGermanyFrance()
         {
             DbSet<Supplier> allSuppliers = context.Suppliers;
 
@@ -78,7 +63,9 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 4 Find all Suppliers without website
+        /// <summary>
+        /// 4. Find alle leverandører der ikke har en hjemmeside. 
+        /// </summary>
         private void AllSuppliersWithoutWebsite()
         {
             DbSet<Supplier> allSuppliers = context.Suppliers;
@@ -89,8 +76,10 @@ namespace EntityFrameworkS3
         }
 
 
-        // 5 Find all European suppliers with a website
-        private void GetAllEuropeanSuppliersWithHomePage()
+        /// <summary>
+        /// 5. Find alle leverandører fra europæsiske lande, der har en hjemmeside. 
+        /// </summary>
+        public void GetAllEuropeanSuppliersWithHomePage()
         {
             IQueryable<Supplier> suppliers = context.Suppliers.Where(s => s.Country == "Germany"
             || s.Country == "France" || s.Country == "UK" || s.Country == "Sweden" ||
@@ -103,8 +92,10 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 6 Get all employees with M as first name
-        private void GetAllEmployessFirstNameM()
+        /// <summary>
+        /// 6. Find alle ansatte hvis fornavn begynder med M. 
+        /// </summary>
+        public void GetAllEmployessFirstNameM()
         {
             DbSet<Employee> allEmployees = context.Employees;
 
@@ -114,8 +105,10 @@ namespace EntityFrameworkS3
             }
         }
 
-        //7  Get all employees whose last name ends with an
-        private void allEmployeesLastNameAn()
+        /// <summary>
+        /// 7. Find alle ansatte hvis efternavn slutter på an. 
+        /// </summary>
+        public void allEmployeesLastNameAn()
         {
             DbSet<Employee> allEmployees = context.Employees;
 
@@ -124,7 +117,10 @@ namespace EntityFrameworkS3
                 Console.WriteLine($"Employee: {employee.FirstName} {employee.LastName}");
             }
         }
-        // 8 Find all non-doctor female employees
+
+        /// <summary>
+        /// 8. Find alle kvindelige ansatte der ikke er læger (benyt en OR). 
+        /// </summary>
         private static void FindAllEmployeesFemaleNotDoctor()
         {
             DbSet<Employee> allEmployees = context.Employees;
@@ -134,8 +130,10 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 9 Find all Sales representatives from UK
-        private static void AllSalesRepresentativesFromUK()
+        /// <summary>
+        /// 9. Find alle medarbejdere der er Sales Representative og kommer fra UK. 
+        /// </summary>
+        public static void AllSalesRepresentativesFromUK()
         {
             DbSet<Employee> allEmployees = context.Employees;
             foreach(Employee employee in allEmployees.Where(o => o.Title.Equals("Sales Representative") && o.Country.Equals("UK")))
@@ -144,23 +142,22 @@ namespace EntityFrameworkS3
             }
         }
 
-        // 10 Find amount of Products
-        private static void GetAmountOfProducts()
+        /// <summary>
+        /// 10. Find ud af hvor mange produkter der er. 
+        /// </summary>
+        public static void GetAmountOfProducts()
         {
-            DbSet<Product> allProducts = context.Products;
-            int count = 1;
-            foreach(Product product in allProducts)
-            {
+            // Get product amount
+            int productAmount = context.Products.ToList().Count;
 
-                Console.WriteLine($"{count} Product: {product.ProductName}");
-                count++;
-            }
-
-            Console.WriteLine($"Total amount: {allProducts.Count()}");
+            // Output result
+            Console.WriteLine($"Amount of products: {productAmount}");
         }
 
-        // 11 Find average price of product
-        private static void AverageProductPrice()
+        /// <summary>
+        /// 11. Find gennemsnitsprisen for alle produkter. 
+        /// </summary>
+        public static void AverageProductPrice()
         {
             decimal? averagePrice = context.Products.Sum(p => p.UnitPrice) / context.Products.Count<Product>();
 
@@ -168,18 +165,120 @@ namespace EntityFrameworkS3
             Console.WriteLine($"{averagePrice:c}");
         }
 
-        // 12 Find products over 20,00, sort by highest price.
-        private static void GetProductOverTwentyHighestPrice()
+        /// <summary>
+        /// 12. Find antal produkter med en enhedspris over 20,00. Sorter efter dyreste. 
+        /// </summary>
+        public static void GetProductOverTwentyHighestPrice()
         {
-            DbSet<Product> allProducts = context.Products;
+            // Find products with unit price over twenty sort by highest
+            IOrderedQueryable<Product> products = (
+                from p in context.Products
+                where p.UnitPrice >= 20
+                select p
+            ).OrderByDescending(p => p.UnitPrice);
 
-            foreach(Product product in allProducts.Where(o => o.UnitPrice > 20))
+            // Output result
+            foreach(Product product in products)
             {
-
-                Console.WriteLine($"{count} Product: {product.ProductName}");
-                count++;
+                Console.WriteLine($"{product.ProductId} : {product.ProductName} : {product.UnitPrice}");
             }
         }
 
+        /// <summary>
+        /// 13. Find de produkter der ikke er flere af, sorter alfabetisk. 
+        /// </summary>
+        public static void FindSoldOutProductsSortAlphabetically()
+        {
+            // Using IOrderedQueryable. Find sold out Products
+            IOrderedQueryable<Product> soldOutProducts = (
+                from p in context.Products
+                where p.UnitsInStock == 0
+                select p
+            ).OrderBy(p => p.ProductName);
+
+            // Output result
+            foreach(Product product in soldOutProducts)
+            {
+                Console.WriteLine($"Product name: {product.ProductName} : Price: {product.UnitPrice:c} : Amount: {product.UnitsInStock}");
+            }
+        }
+
+        /// <summary>
+        /// 14. Find alle de produkter der ikke er flere af, og som ikke er bestilt, men heller ikke udgået, sorter efter produktnavn, omvendt alfabetisk rækkefølge. 
+        /// </summary>
+        public static void FindProductsOutOfStockWithNoOrders()
+        {
+            // Using IOrderedQueryable.
+            // Find products out of stock with no orders
+            IOrderedQueryable<Product> products = (
+                from p in context.Products
+                where p.UnitsInStock == 0 && p.UnitsOnOrder == 0 && p.Discontinued == false
+                select p
+            ).OrderBy(p => p.ProductName);
+
+            // Output result
+            foreach(Product product in products)
+            {
+                Console.WriteLine($"Product name: {product.ProductName} : Price: {product.UnitPrice:c} : Amount: {product.UnitsInStock}");
+            }
+        }
+
+        /// <summary>
+        /// 15. Find alle kunder der er enten er franske ejere eller britiske sælgere, sorter efter land, dernæst navn.
+        /// </summary>
+        public static void FindFrenchOwnersAndBritishSellers()
+        {
+            // Using IOrderedQueryable Interface
+            // Find french owners and british sellers
+            IOrderedQueryable<Customer> customers = (
+                from c in context.Customers
+                where c.Country == "France" && c.ContactTitle == "Owner" || c.Country == "UK" && c.ContactTitle.Contains("Sales")
+                select c
+            ).OrderBy(c => c.Country)
+            .ThenBy(c => c.ContactName);
+
+            // Output result
+            foreach(Customer customer in customers)
+            {
+                Console.WriteLine($"{customer.Country} : {customer.ContactName} : {customer.ContactTitle}");
+            }
+        }
+
+        /// <summary>
+        /// 16. Find alle nord-, mellem-, og sydamerikanske kunder der ikke har en fax, sorter alfabetisk
+        /// </summary>
+        public static void FindAmericanCustomersWithoutFax()
+        {
+            // Find american customers without fax number
+            IOrderedQueryable<Customer> customers = (
+                from c in context.Customers
+                where c.Fax == null && c.Country == "Mexico"
+                || c.Fax == null && c.Country == "Argentina"
+                || c.Fax == null && c.Country == "Brazil"
+                || c.Fax == null && c.Country == "Venezuela"
+                || c.Fax == null && c.Country == "USA"
+                select c
+            ).OrderBy(c => c.CompanyName);
+
+            // Output result
+            foreach(Customer customer in customers)
+            {
+                Console.WriteLine($"{customer.CompanyName} : {customer.ContactName}");
+            }
+        }
+        #endregion
+
+        #region Update
+
+        /// <summary>
+        /// 1. Opdater alle leverandørers fax til no fax number, hvis ikke der er et fax nummer.
+        /// Gør det samme for alle kunder (Hint: adskil disse to opdateringer med ; 
+        /// og kør dem begge i samme transaktion) 
+        /// </summary>
+        public static void UpdateSupplierFaxNumber()
+        {
+
+        }
+        #endregion
     }
 }
