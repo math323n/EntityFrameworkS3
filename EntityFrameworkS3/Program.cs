@@ -17,9 +17,43 @@ namespace EntityFrameworkS3
 
         static void Main()
         {
-            
-      
-            
+            // Insert 1: INSERT Kim Larsen - Done
+            /* Insert 2: INSERT all AspIT Trekanten Teachers - Done
+            // Dima
+            InsertNewEmployee("Dima", "Viktor Omkvist", "Teacher", "Mr.", new DateTime(1985, 1, 1), DateTime.Now,
+                "Ryesgade 58", "Aalborg", "9000", "Denmark", "33344901", "349");
+            // Kent
+            InsertNewEmployee("Kent", "Iversen", "Teacher", "Mr.", new DateTime(1985, 1, 1), DateTime.Now,
+               "Banegårdspladsen 1a. 2. sal", "Aarhus C", "8000", "Denmark", "33344901", "249");
+            // Mads
+            InsertNewEmployee("Mads", "Rasmussen", "Teacher", "Mr.", new DateTime(1985, 1, 1), DateTime.Now,
+               "Boulevarden 19 G", "Vejle", "7100", "Denmark", "33344901", "1148");
+            // Lars
+            InsertNewEmployee("Lars", "Christensen", "Teacher", "Mr.", new DateTime(1985, 1, 1), DateTime.Now,
+               "Sp. Møllevej 72", "Esbjerg", "6700", "Denmark", "33344901", "3549");
+            // Preben
+            InsertNewEmployee("Preben", "Bisgaard", "Teacher", "Mr.", new DateTime(1985, 1, 1), DateTime.Now,
+               "Ejlskovsgade 3 Indgang B, 2.TV", "Odense C", "5000", "Denmark", "33344901", "9930"); */
+            // Insert 3 - INSERT Super Duper Beer Product
+            // AddSuperDuperBeer();
+
+            //Insert 4. der er en ny Leverandør: Campus Vejle. Find info om dem og tilføj leverandøren. 
+            // AddSupplier("Campus Vejle", "Campus Vejle", "Mr.", "Boulevarden 48", "Vejle", "syddanmark", "7100", "Denmark", "72162616", "72162699", "https://campusvejle.dk/");
+
+            // Insert 5. Campus Vejle er nu leverandør af SuperDuperBeer. 
+            /*Product superDuper = context.Products.FirstOrDefault(p => p.ProductName.Equals("SuperDuperBeer"));
+            if(superDuper is null)
+            {
+                Console.WriteLine("Error, SuperDuperBeer not found");
+            }
+            else
+            {
+                superDuper.SupplierId = 30;
+            }*/
+
+            AddShipper("Mærsk", "33633363");
+
+            context.SaveChanges();
         }
 
         #region¨Select
@@ -400,12 +434,119 @@ namespace EntityFrameworkS3
             }
 
             // Save
-           context.SaveChanges();
+            context.SaveChanges();
         }
         #endregion
 
         #region Insert
+        public static void InsertNewEmployee(string firstName, string lastName, string title, string titleCourtesy,
+            DateTime birthdate, DateTime hireDate, string address, string city,
+            string postalCode, string country, string phone, string extension)
+        {
+            Employee empl = new Employee()
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Title = title,
+                TitleOfCourtesy = titleCourtesy,
+                BirthDate = birthdate,
+                HireDate = hireDate,
+                Address = address,
+                City = city,
+                PostalCode = postalCode,
+                Country = country,
+                HomePhone = phone,
+                Extension = extension
+            };
 
+            context.Employees.Add(empl);
+
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 3. Der er et nyt produkt på banen: SuperDuperBeer.
+        /// Tilføj dette produkt med passende valg af værdier til kolonnerne. 
+        /// </summary>
+        public static void AddSuperDuperBeer()
+        {
+            Product superDuper = new Product()
+            {
+                ProductName = "SuperDuperBeer",
+                SupplierId = 16,
+                CategoryId = 7,
+                QuantityPerUnit = "24 - 0.5 l bottles",
+                UnitPrice = 45,
+                UnitsInStock = 429,
+                UnitsOnOrder = 69,
+                ReorderLevel = 26,
+                Discontinued = false
+            };
+
+            context.Products.Add(superDuper);
+
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Insert 4. der er en ny Leverandør: Campus Vejle. Find info om dem og tilføj leverandøren. 
+        /// </summary>
+        /// <param name="companyName"></param>
+        /// <param name="contactName"></param>
+        /// <param name="contactTitle"></param>
+        /// <param name="address"></param>
+        /// <param name="city"></param>
+        /// <param name="region"></param>
+        /// <param name="postalCode"></param>
+        /// <param name="country"></param>
+        /// <param name="phone"></param>
+        /// <param name="fax"></param>
+        /// <param name="homePage"></param>
+        public static void AddSupplier(string companyName, string contactName, string contactTitle,
+            string address, string city, string region, string postalCode, string country,
+            string phone, string fax, string homePage)
+        {
+
+            Supplier supplier = new Supplier()
+            {
+                CompanyName = companyName,
+                ContactName = contactName,
+                ContactTitle = contactTitle,
+                Address = address,
+                City = city,
+                Region = region,
+                PostalCode = postalCode,
+                Country = country,
+                Phone = phone,
+                Fax = fax,
+                HomePage = homePage
+            };
+
+            context.Suppliers.Add(supplier);
+
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Insert 6. Der er en ny Shipper: Mærsk. Tilføj den. 
+        /// </summary>
+        /// <param name="companyName"></param>
+        /// <param name="phone"></param>
+        public static void AddShipper(string companyName, string phone)
+        {
+            Shipper shipper = new Shipper()
+            {
+                CompanyName = companyName,
+                Phone = phone
+            };
+
+            context.Shippers.Add(shipper);
+
+            context.SaveChanges();
+        }
+        #endregion
+
+        #region Joins
         #endregion
     }
 }
