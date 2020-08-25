@@ -17,8 +17,9 @@ namespace EntityFrameworkS3
 
         static void Main()
         {
-            UpdateSupplierFaxNumber();
-            UpdateReorderAmount();
+            
+      
+            
         }
 
         #region¨Select
@@ -319,9 +320,92 @@ namespace EntityFrameworkS3
         /// </summary>
         public static void UpdateSpanishCustomers()
         {
+            // Get all Spanish Customers
             IQueryable<Customer> customers = context.Customers.Where(o => o.Country == "Spain");
 
+            foreach(Customer customer in customers)
+            {
+                // Switch statement to change Region of customer 
+                switch(customer.City)
+                {
+                    case "Madrid":
+                        customer.Region = "Madrid";
+                        break;
+
+                    case "Barcelona":
+                        customer.Region = "Catalonia";
+                        break;
+
+                    case "Sevilla":
+                        customer.Region = "Andalusia";
+                        break;
+                }
+            }
+            // Remember to save!
+            context.SaveChanges();
         }
+
+        /// <summary>
+        /// 4. Simons bistro har ændret navn til Simons Vaffelhus 
+        /// og flyttet til Strandvejen 65, 7100 Vejle. Foretag opdateringen. 
+        /// </summary>
+        public static void UpdateSimonsAddress()
+        {
+            Customer simons = context.Customers.FirstOrDefault(c => c.CompanyName.Equals("Simons bistro"));
+
+            simons.CompanyName = "Simons Vaffelhus";
+            simons.City = "Vejle";
+            simons.Address = "Strandvejen 65";
+            simons.PostalCode = "7100";
+            context.SaveChanges();
+
+        }
+
+        /// <summary>
+        /// 5. White Clover Markets er flyttet til 247 New Avenue, 
+        /// Chicago og har skifter nummer til 555-20159. Foretag opdateringen. 
+        /// </summary>
+        public static void UpdateWhiteClover()
+        {
+            Customer whiteClover = context.Customers.FirstOrDefault(c => c.CompanyName.Equals("White Clover Markets"));
+
+            whiteClover.Address = "247 New Avenue";
+            whiteClover.City = "Chicago";
+            whiteClover.Phone = "555-20159";
+
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 6. Medarbejderen Janet er flyttet ind hos medarbejderen Andrew. Foretag opdateringen. 
+        /// </summary>
+        public static void UpdateJanet()
+        {
+            // Get Employee Janet, using much better FirstOrDefault method
+            Employee janet = context.Employees.FirstOrDefault(e => e.FirstName.Equals("Janet") && e.LastName.Equals("Leverling"));
+
+            // Get Employee Andrew
+            Employee andrew = context.Employees.FirstOrDefault(e => e.FirstName.Equals("Andrew") && e.LastName.Equals("Fuller"));
+
+            // Simple null check
+            if(janet is null || andrew is null)
+            {
+                Console.WriteLine("Error, Janet or Andrew not found");
+            }
+            else
+            {
+                // Set Janets address to Andrews address
+                janet.Address = andrew.Address;
+                janet.City = andrew.City;
+            }
+
+            // Save
+           context.SaveChanges();
+        }
+        #endregion
+
+        #region Insert
+
         #endregion
     }
 }
