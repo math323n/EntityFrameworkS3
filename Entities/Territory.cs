@@ -10,7 +10,7 @@ namespace Entities
             EmployeeTerritories = new HashSet<EmployeeTerritories>();
         }
 
-        public string TerritoryId { get; set; }
+        public int TerritoryId { get; set; }
         public string TerritoryDescription { get; set; }
         public int RegionId { get; set; }
 

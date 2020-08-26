@@ -1,22 +1,26 @@
 ﻿using Entities;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using System.Reflection.PortableExecutable;
+
 namespace EntityFrameworkS3
 {
     class Program
     {
         // Create Context
-        private static NorthwindContext context = new NorthwindContext();
+        private static readonly NorthwindContext context = new NorthwindContext();
 
 
         static void Main()
         {
+            /*
             // Insert 1: INSERT Kim Larsen - Done
             /* Insert 2: INSERT all AspIT Trekanten Teachers - Done
             // Dima
@@ -51,12 +55,18 @@ namespace EntityFrameworkS3
                 superDuper.SupplierId = 30;
             }*/
 
-            AddShipper("Mærsk", "33633363");
+            // AddShipper("Mærsk", "33633363");*/
 
-            context.SaveChanges();
+            TerritoryRegions();
+
+
+
+
+
+
         }
 
-        #region¨Select
+        #region Select
 
         /// <summary>
         /// 1. Find alle produkter der ikke længere føres. 
@@ -547,6 +557,48 @@ namespace EntityFrameworkS3
         #endregion
 
         #region Joins
+
+        /// <summary>
+        /// 1. Find beskrivelserne for alle territorier 
+        /// og deres tilhørende regioner – hver kombination skal kun vi-ses én gang (DISTINCT).
+        /// </summary>
+        public static void TerritoryRegions()
+        {
+            // Joins 
+           var result = context.Territories.Join(context.Region,
+                t => t.RegionId,
+                // Get foreign key
+                r => r.RegionId,
+                // Create new
+                (territory, region) => new
+                {
+                    territoryDescription = territory.TerritoryDescription,
+                    regionDescription = region.RegionDescription
+                }).Distinct();
+
+            // Output results
+            foreach(var territory in result)
+            {
+                Console.WriteLine($"{territory.territoryDescription} {territory.regionDescription}");
+            }
+        }
+
+        /// <summary>
+        /// 2. Find alle produkter der er drikkevarer og som 
+        /// ikke er udgået. Vis Produktnavn, pris og lagerbe-holdning, 
+        /// sorter efter lagerbeholdning, dernæst produktnavn.
+        /// </summary>
+        public static void NonExpiredDrinkProducts()
+        {
+            var result = context.Products.Join(context.Categories,
+                p => p.CategoryId,
+                c => c.CategoryId,
+                (product, category)
+                {
+
+            }
+        }
+
         #endregion
     }
 }
